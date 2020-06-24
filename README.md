@@ -1,5 +1,6 @@
 ## Shop-API
-A RESTful Shop API (Node & MongoDB) 
+
+A RESTful Shop API (Node & MongoDB)
 
 ### Routes
 
@@ -9,6 +10,8 @@ A RESTful Shop API (Node & MongoDB)
 ### Dependencies
 
 - express
+- mongoose
+- morgan
 
 ### Commands
 

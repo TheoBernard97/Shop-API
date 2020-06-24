@@ -8,7 +8,10 @@ require("dotenv").config();
 const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
 
-mongoose.connect(process.env.DB_URI, { useNewUrlParser: true });
+mongoose.connect(process.env.DB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
