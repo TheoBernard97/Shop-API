@@ -129,6 +129,11 @@ router.delete("/:productId", (req, res, next) => {
       if (data) {
         res.status(200).json({
           message: "Product deleted",
+          request: {
+            type: "GET",
+            description: "Get all products",
+            url: "http://localhost:5000/products",
+          },
         });
       } else {
         res.status(404).json({ message: "ID not found" });
