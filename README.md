@@ -1,13 +1,15 @@
-## Shop-API
+# Shop-API
 
 A RESTful Shop API (Node & MongoDB)
 
-### Routes & Operations
+## Routes
 
 - /products
 - /orders
 
-#### Products
+## Operations
+
+### Products
 
 Endpoint : /products
 
@@ -20,7 +22,7 @@ Endpoint : /products/id
     - POST
     - DELETE
 
-#### Orders
+### Orders
 
 Endpoint : /orders
 
@@ -32,12 +34,12 @@ Endpoint : /orders/id
     - GET
     - DELETE
 
-### Dependencies
+## Dependencies
 
 - express
 - mongoose
 - morgan
 
-### Commands
+## Commands
 
 - `npm run start`
