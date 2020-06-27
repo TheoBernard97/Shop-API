@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const Product = require("../models/product");
 
-// Show every products
+// Show all products
 router.get("/", (req, res, next) => {
   Product.find()
     .select("_id name price")
@@ -14,9 +14,7 @@ router.get("/", (req, res, next) => {
         count: data.length,
         products: data.map((doc) => {
           return {
-            _id: doc._id,
-            name: doc.name,
-            price: doc.price,
+            data: doc,
             request: {
               type: "GET",
               url: "http://localhost:5000/products/" + doc._id,
@@ -25,9 +23,7 @@ router.get("/", (req, res, next) => {
         }),
       };
 
-      res
-        .status(200)
-        .json({ message: "Handling GET request to /products", response });
+      res.status(200).json({ response });
     })
     .catch((err) => {
       console.log(err);
@@ -47,7 +43,7 @@ router.post("/", (req, res, next) => {
     .save()
     .then((data) => {
       res.status(201).json({
-        message: "Created product successfully",
+        message: "Product successfully created",
         createdProduct: {
           _id: data._id,
           name: data.name,

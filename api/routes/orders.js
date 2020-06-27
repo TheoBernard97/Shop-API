@@ -4,10 +4,9 @@ const mongoose = require("mongoose");
 
 const Order = require("../models/order");
 
-// Show every oders
+// Show all oders
 router.get("/", (req, res, next) => {
   Order.find()
-    .select("_id product quantity request")
     .exec()
     .then((data) => {
       const response = {
@@ -25,9 +24,7 @@ router.get("/", (req, res, next) => {
         }),
       };
 
-      res
-        .status(200)
-        .json({ message: "Handling GET request to /orders", response });
+      res.status(200).json({ response });
     })
     .catch((err) => {
       console.log(err);
@@ -46,7 +43,6 @@ router.post("/", (req, res, next) => {
   order
     .save()
     .then((data) => {
-      console.log(data);
       res.status(201).json(data);
     })
     .catch((err) => {
@@ -55,8 +51,13 @@ router.post("/", (req, res, next) => {
     });
 
   res.status(201).json({
-    message: "Handling POST request to /orders",
+    message: "Order successfully created",
     order: order,
+    request: {
+      type: "GET",
+      description: "Get all orders",
+      url: "http://localhost:5000/orders",
+    },
   });
 });
 
@@ -79,9 +80,7 @@ router.get("/:orderId", (req, res, next) => {
       };
 
       if (data) {
-        res
-          .status(200)
-          .json({ message: "Handling GET request to /orders", response });
+        res.status(200).json({ response });
       } else {
         res.status(404).json({ message: "ID not found" });
       }
