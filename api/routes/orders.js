@@ -3,10 +3,12 @@ const router = express.Router();
 const mongoose = require("mongoose");
 
 const Order = require("../models/order");
+const Product = require("../models/product");
 
 // Show all oders
 router.get("/", (req, res, next) => {
   Order.find()
+    .populate("product", "name")
     .exec()
     .then((data) => {
       const response = {
@@ -34,31 +36,40 @@ router.get("/", (req, res, next) => {
 
 // Add a new order
 router.post("/", (req, res, next) => {
-  const order = new Order({
-    _id: mongoose.Types.ObjectId(),
-    quantity: req.body.quantity,
-    product: req.body.productId,
-  });
-
-  order
-    .save()
+  Product.findById(req.body.productId)
+    .then((product) => {
+      if (!product) {
+        return res.status(404).json({
+          message: "Product not found",
+        });
+      }
+      const order = new Order({
+        _id: mongoose.Types.ObjectId(),
+        quantity: req.body.quantity,
+        product: req.body.productId,
+      });
+      return order.save();
+    })
     .then((data) => {
-      res.status(201).json(data);
+      res.status(201).json({
+        message: "Order stored",
+        createdOrder: {
+          _id: data._id,
+          product: data.product,
+          quantity: data.quantity,
+        },
+        request: {
+          type: "GET",
+          url: "http://localhost:5000/orders/" + data._id,
+        },
+      });
     })
     .catch((err) => {
       console.log(err);
-      res.status(500).json({ error: err });
+      res.status(500).json({
+        error: err,
+      });
     });
-
-  res.status(201).json({
-    message: "Order successfully created",
-    order: order,
-    request: {
-      type: "GET",
-      description: "Get all orders",
-      url: "http://localhost:5000/orders",
-    },
-  });
 });
 
 // Show a specific order
@@ -66,6 +77,7 @@ router.get("/:orderId", (req, res, next) => {
   const id = req.params.orderId;
 
   Order.findById(id)
+    .populate("product", "name price")
     .exec()
     .then((data) => {
       const response = {
@@ -82,7 +94,7 @@ router.get("/:orderId", (req, res, next) => {
       if (data) {
         res.status(200).json({ response });
       } else {
-        res.status(404).json({ message: "ID not found" });
+        res.status(404).json({ message: "Order not found" });
       }
     })
     .catch((err) => {
@@ -108,7 +120,7 @@ router.delete("/:orderId", (req, res, next) => {
           },
         });
       } else {
-        res.status(404).json({ message: "ID not found" });
+        res.status(404).json({ message: "Order not found" });
       }
     })
     .catch((err) => {
